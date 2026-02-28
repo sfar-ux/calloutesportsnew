@@ -18,7 +18,7 @@ const app: Application = express();
 
 // Middlewares
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://calloutesportsnew.vercel.app'],
+    origin: ['http://localhost:3000', 'https://calloutesportsnew.vercel.app', 'https://calloutesports.com', 'https://www.calloutesports.com'],
     credentials: true,
 }));
 app.use(express.json());
