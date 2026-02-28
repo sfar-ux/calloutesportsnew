@@ -27,9 +27,9 @@ export default function AdminRegistrationsPage() {
                 (reg.iglContact || '').toLowerCase().includes(searchTerm.toLowerCase());
 
             const matchesStatus = statusFilter === 'all' ||
-                (statusFilter === 'verified' && reg.payment || reg.paymentDetailsVerified) ||
-                (statusFilter === 'pending' && !reg.payment || reg.paymentDetailsVerified && reg.payment || reg.paymentDetailsStatus === 'PENDING') ||
-                (statusFilter === 'failed' && reg.payment || reg.paymentDetailsStatus === 'FAILED');
+                (statusFilter === 'verified' && reg.paymentVerified) ||
+                (statusFilter === 'pending' && !reg.paymentVerified && reg.paymentStatus === 'PENDING') ||
+                (statusFilter === 'failed' && reg.paymentStatus === 'FAILED');
 
             return matchesSearch && matchesStatus;
         });
@@ -59,7 +59,7 @@ export default function AdminRegistrationsPage() {
             setSelectedReg(null);
         } catch (error) {
             console.error('Error verifying payment:', error);
-            alert('Failed to verify payment: ' + error.message);
+            alert('Failed to verify payment. Please try again.');
         } finally {
             setVerifying(false);
         }
@@ -128,13 +128,13 @@ export default function AdminRegistrationsPage() {
                 reg.college || 'N/A',
                 reg.playerNames?.length || 0,
                 ...playerCells,
-                reg.payment || reg.paymentDetailsVerified ? 'VERIFIED' : (reg.payment || reg.paymentDetailsStatus || 'N/A'),
-                reg.payment || reg.paymentDetails?.amount ? `Rs. ${reg.payment || reg.paymentDetails.amount}` : 'N/A',
-                reg.payment || reg.paymentDetails?.bankName || 'N/A',
-                reg.payment || reg.paymentDetails?.transactionId || 'N/A',
-                reg.payment || reg.paymentDetails?.upiId || 'N/A',
-                reg.payment || reg.paymentDetails?.paymentDate || 'N/A',
-                reg.payment || reg.paymentDetails?.paymentTime || 'N/A',
+                reg.paymentVerified ? 'VERIFIED' : (reg.paymentStatus || 'N/A'),
+                reg.payment?.amount ? `Rs. ${reg.payment.amount}` : 'N/A',
+                reg.payment?.bankName || 'N/A',
+                reg.payment?.transactionId || 'N/A',
+                reg.payment?.upiId || 'N/A',
+                reg.payment?.paymentDate || 'N/A',
+                reg.payment?.paymentTime || 'N/A',
                 reg.qrIndex != null ? `QR${reg.qrIndex}` : 'N/A',
                 (reg.createdAt ?? reg.registeredAt)?.toDate?.().toLocaleString() || 'N/A'
             ];
@@ -275,13 +275,13 @@ export default function AdminRegistrationsPage() {
                                 </div>
 
                                 <div className="flex items-center gap-3">
-                                    <span className={`px-3 py-1 text-xs font-bold rounded-full ${reg.payment || reg.paymentDetailsVerified
+                                    <span className={`px-3 py-1 text-xs font-bold rounded-full ${reg.paymentVerified
                                         ? 'bg-neon-green/20 text-neon-green border border-neon-green/50'
-                                        : reg.payment || reg.paymentDetailsStatus === 'FAILED'
+                                        : reg.paymentStatus === 'FAILED'
                                             ? 'bg-red-500/20 text-red-500 border border-red-500/50'
                                             : 'bg-yellow-500/20 text-yellow-500 border border-yellow-500/50'
                                         }`}>
-                                        {reg.payment || reg.paymentDetailsVerified ? '🟢 VERIFIED' : reg.payment || reg.paymentDetailsStatus === 'FAILED' ? '🔴 FAILED' : '🟡 PENDING'}
+                                        {reg.paymentVerified ? '🟢 VERIFIED' : reg.paymentStatus === 'FAILED' ? '🔴 FAILED' : '🟡 PENDING'}
                                     </span>
                                     <button
                                         onClick={() => setSelectedReg(reg)}
