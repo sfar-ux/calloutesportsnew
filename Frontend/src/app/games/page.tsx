@@ -8,8 +8,9 @@ import Link from "next/link";
 import { NeonButton } from "@/components/ui/NeonButton";
 import { useState, useEffect, useMemo } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { RiTrophyLine, RiGamepadLine, RiTeamLine, RiHotelLine } from "react-icons/ri";
+import { RiTrophyLine, RiGamepadLine, RiTeamLine, RiHotelLine, RiTimerLine } from "react-icons/ri";
 import Image from "next/image";
+import { resolveImageUrl } from "@/lib/utils";
 
 const GAMES = [
     { id: "bgmi", name: "BGMI", src: "/games/tiles/BGMI.jpeg", desc: "Battlegrounds Mobile India - The ultimate battle royale experience." },
@@ -36,6 +37,25 @@ export default function PublicGamesPage() {
             setTournaments(sorted);
         }
     }, [allTournaments]);
+
+    const isDeadlinePassed = (deadline: any) => {
+        if (!deadline) return false;
+        const d = deadline.seconds ? new Date(deadline.seconds * 1000) : new Date(deadline);
+        return d < new Date();
+    };
+
+    const formatDeadline = (deadline: any) => {
+        if (!deadline) return 'No Deadline';
+        const d = deadline.seconds ? new Date(deadline.seconds * 1000) : new Date(deadline);
+        return d.toLocaleString('en-IN', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    };
 
     return (
         <div className="min-h-screen bg-black pt-28 pb-16 relative overflow-hidden">
@@ -132,6 +152,17 @@ export default function PublicGamesPage() {
                                                 <div className="absolute inset-0 bg-gradient-to-tr from-neon-green/0 via-neon-green/5 to-neon-green/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
                                                 <div>
+                                                    {/* Tournament Poster/Logo */}
+                                                    {(tourney.posterUrl || tourney.logoUrl) && (
+                                                        <div className="mb-6 rounded-xl overflow-hidden border border-white/10">
+                                                            <img 
+                                                                src={resolveImageUrl(tourney.posterUrl || tourney.logoUrl)} 
+                                                                alt={tourney.name}
+                                                                className="w-full h-48 object-cover"
+                                                            />
+                                                        </div>
+                                                    )}
+
                                                     <div className="flex justify-between items-start mb-6">
                                                         <div className="flex flex-col gap-2">
                                                             <span className="w-fit text-xs font-mono font-bold text-black bg-neon-green py-1 px-3 rounded uppercase tracking-wide flex items-center gap-1 shadow-[0_0_10px_rgba(0,255,102,0.4)]">
@@ -170,7 +201,7 @@ export default function PublicGamesPage() {
                                                                 {tourney.paymentAmount === 0 ? 'FREE' : `₹${tourney.paymentAmount}`}
                                                             </span>
                                                         </div>
-                                                        <div className="flex justify-between items-center pt-1">
+                                                        <div className="flex justify-between items-center border-b border-white/5 pb-3">
                                                             <div className="flex items-center gap-2 text-gray-400 font-sans text-sm">
                                                                 <RiTeamLine className="text-blue-400" />
                                                                 <span>Slots Filled</span>
@@ -179,14 +210,35 @@ export default function PublicGamesPage() {
                                                                 {tourney.currentRegistrations || 0} <span className="text-gray-500 mx-1">/</span> {tourney.maxSlots || "∞"}
                                                             </span>
                                                         </div>
+                                                        <div className="flex justify-between items-center pt-1">
+                                                            <div className="flex items-center gap-2 text-gray-400 font-sans text-sm">
+                                                                <RiTimerLine className={isDeadlinePassed(tourney.registrationDeadline) ? "text-red-500" : "text-yellow-400"} />
+                                                                <span>Deadline</span>
+                                                            </div>
+                                                            <span className={`font-mono text-xs font-bold ${isDeadlinePassed(tourney.registrationDeadline) ? "text-red-500" : "text-gray-300"}`}>
+                                                                {formatDeadline(tourney.registrationDeadline)}
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 </div>
 
-                                                <Link href={user ? "/dashboard/register" : "/login"} className="mt-auto relative z-10 block">
-                                                    <button className="w-full bg-white/5 border border-neon-green/30 text-neon-green font-orbitron font-bold py-3 px-4 rounded-lg hover:bg-neon-green hover:text-black transition-all duration-300 uppercase tracking-widest text-sm hover:shadow-[0_0_15px_rgba(0,255,102,0.4)]">
-                                                        {user ? "Join Tournament" : "Login to Register"}
-                                                    </button>
-                                                </Link>
+                                                <div className="mt-auto relative z-10 block">
+                                                    <Link href={isDeadlinePassed(tourney.registrationDeadline) ? "#" : (user ? "/dashboard/register" : "/login")}>
+                                                        <button
+                                                            disabled={isDeadlinePassed(tourney.registrationDeadline)}
+                                                            className={`w-full font-orbitron font-bold py-3 px-4 rounded-lg transition-all duration-300 uppercase tracking-widest text-sm
+                                                                ${isDeadlinePassed(tourney.registrationDeadline)
+                                                                    ? "bg-red-500/10 border border-red-500/30 text-red-500 cursor-not-allowed"
+                                                                    : "bg-white/5 border border-neon-green/30 text-neon-green hover:bg-neon-green hover:text-black hover:shadow-[0_0_15px_rgba(0,255,102,0.4)]"
+                                                                }`}
+                                                        >
+                                                            {isDeadlinePassed(tourney.registrationDeadline)
+                                                                ? "Registration Closed"
+                                                                : (user ? "Join Tournament" : "Login to Register")
+                                                            }
+                                                        </button>
+                                                    </Link>
+                                                </div>
                                             </motion.div>
                                         ))}
                                     </div>

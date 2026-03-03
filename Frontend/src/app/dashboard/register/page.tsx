@@ -313,33 +313,48 @@ export default function RegisterTournamentPage() {
                                                                 ? 'border-neon-green/60 bg-neon-green/5 shadow-[0_0_20px_rgba(0,255,102,0.08)]'
                                                                 : 'border-white/8 bg-white/3 hover:border-white/20 hover:bg-white/5'}`}
                                                     >
-                                                        <div className="flex items-start justify-between gap-4">
+                                                        <div className="flex items-start gap-4">
+                                                            {/* Tournament Poster/Logo */}
+                                                            {(t.posterUrl || t.logoUrl) && (
+                                                                <div className="flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden border border-white/10">
+                                                                    <img 
+                                                                        src={resolveImageUrl(t.posterUrl || t.logoUrl)} 
+                                                                        alt={t.name}
+                                                                        className="w-full h-full object-cover"
+                                                                    />
+                                                                </div>
+                                                            )}
+                                                            
                                                             <div className="flex-1 min-w-0">
-                                                                <p className="font-orbitron font-bold text-white text-sm tracking-wide truncate">{t.name}</p>
-                                                                {t.description && <p className="text-gray-500 text-xs mt-1 line-clamp-1">{t.description}</p>}
-                                                            </div>
-                                                            <div className={`flex-shrink-0 w-5 h-5 rounded-full border-2 mt-0.5 transition-all
-                                                                ${selectedTournament?.id === t.id ? 'border-neon-green bg-neon-green' : 'border-white/20'}`}>
-                                                                {selectedTournament?.id === t.id && (
-                                                                    <RiCheckLine className="text-black text-xs w-full h-full" />
+                                                                <div className="flex items-start justify-between gap-4 mb-2">
+                                                                    <div className="flex-1 min-w-0">
+                                                                        <p className="font-orbitron font-bold text-white text-sm tracking-wide truncate">{t.name}</p>
+                                                                        {t.description && <p className="text-gray-500 text-xs mt-1 line-clamp-2">{t.description}</p>}
+                                                                    </div>
+                                                                    <div className={`flex-shrink-0 w-5 h-5 rounded-full border-2 mt-0.5 transition-all
+                                                                        ${selectedTournament?.id === t.id ? 'border-neon-green bg-neon-green' : 'border-white/20'}`}>
+                                                                        {selectedTournament?.id === t.id && (
+                                                                            <RiCheckLine className="text-black text-xs w-full h-full" />
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className="grid grid-cols-3 gap-2 mt-3">
+                                                                    <InfoChip icon={RiMoneyDollarCircleLine} color="text-neon-green"
+                                                                        label={t.paymentAmount === 0 ? 'Free' : `₹${t.paymentAmount}`} />
+                                                                    <InfoChip icon={RiGroupLine} color="text-blue-400"
+                                                                        label={t.maxSlots > 0 ? `${t.currentRegistrations}/${t.maxSlots} slots` : 'Unlimited'} />
+                                                                    <InfoChip icon={RiGamepadLine} color="text-purple-400"
+                                                                        label={t.supportedGames?.length > 0 ? t.supportedGames.map((g: any) => g.name).join(', ') : 'Any game'} />
+                                                                </div>
+
+                                                                {t.isFull && (
+                                                                    <div className="mt-2 text-xs text-red-400 font-bold uppercase tracking-wider">
+                                                                        ✗ Tournament Full
+                                                                    </div>
                                                                 )}
                                                             </div>
                                                         </div>
-
-                                                        <div className="grid grid-cols-3 gap-2 mt-3">
-                                                            <InfoChip icon={RiMoneyDollarCircleLine} color="text-neon-green"
-                                                                label={t.paymentAmount === 0 ? 'Free' : `₹${t.paymentAmount}`} />
-                                                            <InfoChip icon={RiGroupLine} color="text-blue-400"
-                                                                label={t.maxSlots > 0 ? `${t.currentRegistrations}/${t.maxSlots} slots` : 'Unlimited'} />
-                                                            <InfoChip icon={RiGamepadLine} color="text-purple-400"
-                                                                label={t.supportedGames?.length > 0 ? t.supportedGames.map((g: any) => g.name).join(', ') : 'Any game'} />
-                                                        </div>
-
-                                                        {t.isFull && (
-                                                            <div className="mt-2 text-xs text-red-400 font-bold uppercase tracking-wider">
-                                                                ✗ Tournament Full
-                                                            </div>
-                                                        )}
                                                     </button>
                                                 ))}
                                             </div>

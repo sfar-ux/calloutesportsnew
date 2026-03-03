@@ -191,8 +191,8 @@ export default function AdminTournamentsPage() {
                 setUploadingImage(null);
             }
         } else {
-            // For new tournament, handle previews locally or alert user to save draft first
-            alert('Please save the tournament as DRAFT first to enable image uploads.');
+            // For new tournament, user must save as draft first
+            alert('Please save the tournament as DRAFT first, then you can upload images.');
         }
     };
 
@@ -226,13 +226,15 @@ export default function AdminTournamentsPage() {
 
             if (editingTournament) {
                 await api.patch(`/admin/tournaments/${editingTournament.id}`, payload);
+                setShowModal(false);
             } else {
                 const res = await api.post('/admin/tournaments', payload);
-                // After creating, we can open edit mode to allow uploads
-                setEditingTournament(res.data.data);
-                alert('Tournament created as DRAFT. You can now upload images.');
+                // After creating, switch to edit mode to allow uploads
+                const createdTournament = res.data.data;
+                setEditingTournament(createdTournament);
+                // Keep modal open so user can upload images
+                alert('Tournament created! You can now upload images before publishing.');
             }
-            setShowModal(false);
         } catch (err: any) {
             setError(err.response?.data?.message || 'Failed to save tournament');
         } finally {

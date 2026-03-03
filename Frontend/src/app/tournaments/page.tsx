@@ -9,6 +9,7 @@ import { NeonButton } from "@/components/ui/NeonButton";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { RiTrophyLine, RiGamepadLine, RiTeamLine, RiHotelLine, RiTimerLine } from "react-icons/ri";
+import { resolveImageUrl } from "@/lib/utils";
 
 export default function PublicTournamentsPage() {
     const { user } = useAuth();
@@ -124,6 +125,17 @@ export default function PublicTournamentsPage() {
                                 <div className="absolute inset-0 bg-gradient-to-tr from-neon-green/0 via-neon-green/5 to-neon-green/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
                                 <div>
+                                    {/* Tournament Poster/Logo */}
+                                    {(tourney.posterUrl || tourney.logoUrl) && (
+                                        <div className="mb-6 rounded-xl overflow-hidden border border-white/10">
+                                            <img 
+                                                src={resolveImageUrl(tourney.posterUrl || tourney.logoUrl)} 
+                                                alt={tourney.name}
+                                                className="w-full h-48 object-cover"
+                                            />
+                                        </div>
+                                    )}
+
                                     <div className="flex justify-between items-start mb-6">
                                         <div className="flex flex-col gap-2">
                                             <span className="w-fit text-xs font-mono font-bold text-black bg-neon-green py-1 px-3 rounded uppercase tracking-wide flex items-center gap-1 shadow-[0_0_10px_rgba(0,255,102,0.4)]">
