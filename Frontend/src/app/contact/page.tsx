@@ -1,4 +1,4 @@
-import { RiMailSendLine, RiTimeLine, RiPhoneFill, RiMapPin2Fill } from "react-icons/ri";
+import { RiMailSendLine, RiTimeLine, RiMapPin2Fill } from "react-icons/ri";
 
 export default function ContactPage() {
     return (
@@ -25,16 +25,6 @@ export default function ContactPage() {
                         <h2 className="text-2xl font-orbitron font-bold text-white mb-8 border-b border-white/10 pb-4">Direct Lines</h2>
 
                         <div className="space-y-8 text-gray-300 font-sans">
-                            <div className="flex flex-col sm:flex-row sm:items-center gap-4 group">
-                                <div className="w-12 h-12 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-neon-green group-hover:bg-neon-green/10 transition-colors flex-shrink-0">
-                                    <RiPhoneFill className="text-2xl" />
-                                </div>
-                                <div className="flex flex-col">
-                                    <span className="text-xs uppercase tracking-wider text-gray-500 font-bold mb-1">Phone Number</span>
-                                    <a href="tel:+917352901786" className="text-lg text-white font-mono hover:text-neon-green transition-colors">+91 73529 01786</a>
-                                </div>
-                            </div>
-
                             <div className="flex flex-col sm:flex-row sm:items-center gap-4 group">
                                 <div className="w-12 h-12 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-neon-green group-hover:bg-neon-green/10 transition-colors flex-shrink-0">
                                     <RiMailSendLine className="text-2xl" />
